@@ -121,16 +121,16 @@
                             // excluding p and p and c to size including them
                             if (series.categoryFields === null || series.categoryFields === undefined || series.categoryFields.length === 0) {
                                 aggField = ["All"];
-                                pieAgg = ["All"];
+                                pieAggField = ["All"];
                             } else {
                                 series.categoryFields.forEach(function (c, i) {
                                     if (i < series.categoryFields.length - 1) {
-                                        pieAgg.push(d[c]);
+                                        pieAggField.push(d[c]);
                                     }
                                     if (d[c] === undefined) {
                                         aggField.push(c);
                                     } else {
-                                        aggField.push(d[cat]);
+                                        aggField.push(d[c]);
                                     }
                                 }, this);
                             }

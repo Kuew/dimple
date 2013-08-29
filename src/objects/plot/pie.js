@@ -66,7 +66,6 @@
                 });
 
 
-/////////////////////////////////////////
 //            if (chart._tooltipGroup !== null && chart._tooltipGroup !== undefined) {
 //                chart._tooltipGroup.remove();
 //            }
@@ -83,7 +82,7 @@
 //            chart.svg.append("path")
 //                .attr("d", arc)
 //                .attr("transform", "translate(" + series.pieX + "," + series.pieY + ")");
-//////////////////////////////////////////
+
 
 
             // Update

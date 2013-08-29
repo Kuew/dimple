@@ -3,9 +3,27 @@
         // Source: /src/objects/chart/methods/_getSeriesData.js
         // Create a dataset containing positioning information for every series
         this._getSeriesData = function () {
+//            // Maintain a count of all unpositioned pie series.  These will be distributed equally across
+//            // the chart area once all series have been processed
+//            var unPosPieCount = 0,
+//            // The current index in the list of unpositioned pie series.
+//                unPosPieIndex = 0;
             // If there are series
             if (this.series !== null && this.series !== undefined) {
-                // Iterate all the series
+//                // Count the number of unpositioned pie charts
+//                this.series.forEach(function (series) {
+//                    if (series.p !== null && series.p !== undefined && (series.x === null || series.x === undefined || series.y === null || series.y === undefined)) {
+//                        // If there is only 1 category field there will be a single pie chart for the series, as the
+//                        // category will be used for segments
+//                        if (series.categoryFields === null || series.categoryFields === undefined || series.categoryFields.length < 2) {
+//                            unPosPieCount += 1;
+//                        } else {
+//                            unPosPieCount += dimple.getUniqueValues(data, series.categoryFields.slice(series.categoryFields.length - 1)).length;
+//                        }
+//                    }
+//                }, this);
+
+                // Calculate the positioning data for each series
                 this.series.forEach(function (series) {
                     // The data for this series
                     var returnData = [],
@@ -56,11 +74,11 @@
                     }
 
                     // Deal with mekkos
-                    if (series.x._hasCategories() && series.x._hasMeasure()) {
+                    if (series.x !== null && series.x !== undefined && series.x._hasCategories() && series.x._hasMeasure()) {
                         xCat = series.x.categoryFields[0];
                         xSortArray = dimple._getOrderedList(this.data, xCat, series.x._orderRules.concat([{ ordering : series.x.measure, desc : true }]));
                     }
-                    if (series.y._hasCategories() && series.y._hasMeasure()) {
+                    if (series.y !== null && series.y !== undefined && series.y._hasCategories() && series.y._hasMeasure()) {
                         yCat = series.y.categoryFields[0];
                         ySortArray = dimple._getOrderedList(this.data, yCat, series.y._orderRules.concat([{ ordering : series.y.measure, desc : true }]));
                     }
@@ -76,9 +94,9 @@
                             rules.push({ ordering : series.p.measure, desc : true });
                         } else if (series.z !== null && series.z !== undefined && series.z._hasMeasure()) {
                             rules.push({ ordering : series.z.measure, desc : true });
-                        } else if (series.x._hasMeasure()) {
+                        } else if (series.x !== null && series.x !== undefined && series.x._hasMeasure()) {
                             rules.push({ ordering : series.x.measure, desc : true });
-                        } else if (series.y._hasMeasure()) {
+                        } else if (series.y !== null && series.y !== undefined && series.y._hasMeasure()) {
                             rules.push({ ordering : series.y.measure, desc : true });
                         }
                         orderedSeriesArray = dimple._getOrderedList(this.data, seriesCat, rules);
@@ -105,10 +123,10 @@
                     sortedData.forEach(function (d) {
                         // Reset the index
                         var foundIndex = -1,
+                            // Get the row field value for each axis
                             xField = getField(series.x, d),
                             yField = getField(series.y, d),
                             zField = getField(series.z, d),
-                            pField = getField(series.p, d),
                             // Get the aggregate field using the other fields if necessary
                             aggField = [],
                             pieAggField = [],
@@ -146,7 +164,7 @@
                             }
                         }
                         // Add a key
-                        key = aggField.join("/") + "_" + xField.join("/") + "_" + yField.join("/") + "_" + zField.join("/") + "_" + pField.join("/");
+                        key = aggField.join("/") + "_" + xField.join("/") + "_" + yField.join("/") + "_" + zField.join("/");
                         // See if this field has already been added. 
                         for (k = 0; k < returnData.length; k += 1) {
                             if (returnData[k].key === key) {
@@ -168,7 +186,6 @@
                                 zField: zField,
                                 zValue: null,
                                 zCount: 0,
-                                pField: pField,
                                 pValue: null,
                                 pCount: 0,
                                 cValue: 0,
@@ -281,8 +298,6 @@
                         }
                         if (series.p !== null) {
                             if (useCount.p === true) { ret.pValue = ret.pValueList.length; }
-                            tot = (totals.p[ret.pField.join("/")] === null || totals.p[ret.pField.join("/")] === undefined ? 0 : totals.p[ret.pField.join("/")]) + (series.p._hasMeasure() ? Math.abs(ret.pValue) : 0);
-                            totals.p[ret.pField.join("/")] = tot;
                         }
                         if (series.c !== null) {
                             if (colorBounds.min === null || ret.cValue < colorBounds.min) { colorBounds.min = ret.cValue; }
